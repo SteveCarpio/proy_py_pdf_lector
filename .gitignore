@@ -1,0 +1,18 @@
+# Ignorar el entorno virtual
+env/
+
+# Ignorar archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+*.spec
+build/
+dist/
+
+# Ignorar dependencias si usas pipenv o poetry
+Pipfile
+Pipfile.lock
+
+# Ignorar la carpeta  de visualcode
+.vscode
+.vscode/settings.json
