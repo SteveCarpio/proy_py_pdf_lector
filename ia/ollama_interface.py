@@ -20,16 +20,16 @@ Texto de la factura:
 """
 
     prompt = f"""
-    Extrae la siguiente información de una factura y responde **solo** con el JSON plano, sin texto adicional.
+    Extrae la siguiente información de una factura y responde **solo** con el JSON plano, sin texto adicional. Los decimales deben mostrarse con 'coma'
 
     Campos requeridos:
     - Numero_factura
     - Fecha_emision
     - Nombre_proveedor
     - NIF_CIF_proveedor
-    - Base_imponible
+    - Base_imponible (puede venir con la palabra solo 'base')
     - IVA
-    - Total_factura
+    - Total_factura (puede venir con la palabra solo 'total')
     - Tipo_fondo (TDA 22 o TDA 28)
     - Id_prestamo (número de 14 dígitos que comienza con 5200015)
 

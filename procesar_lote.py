@@ -29,7 +29,7 @@ def procesar_factura(path_pdf):
         print(f"❌ Error inesperado en {path_pdf}: {e}")
         return {}
 
-def formatear_importes(valor):
+def formatear_importes_original(valor):
     if isinstance(valor, str):
         try:
             numero = float(valor.replace('.', '').replace(',', '.'))
@@ -38,18 +38,51 @@ def formatear_importes(valor):
             return valor
     return valor
 
+def formatear_importes(valor):
+    # Si ya es numérico (int o float), formatear directamente
+    if isinstance(valor, (int, float)):
+        formateado = f"{valor:,.2f}"
+        return formateado.replace(',', 'X').replace('.', ',').replace('X', '.')
+
+    # Si es string, intentar interpretar su formato
+    if isinstance(valor, str):
+        try:
+            val = valor.strip()
+
+            # Si contiene punto y coma (posiblemente europeo)
+            if '.' in val and ',' in val:
+                val = val.replace('.', '').replace(',', '.')
+            elif ',' in val and '.' not in val:
+                val = val.replace(',', '.')
+            elif ',' in val and '.' in val and val.find(',') < val.find('.'):
+                # caso raro: "1,234.56" (anglosajón)
+                val = val.replace(',', '')
+            else:
+                val = val.replace(',', '')  # quitar comas si no está claro
+
+            numero = float(val)
+            formateado = f"{numero:,.2f}"
+            return formateado.replace(',', 'X').replace('.', ',').replace('X', '.')
+
+        except:
+            return valor  # si no puede convertirse, devolver el original
+
+    return valor  # si no es string ni número, devolver tal cual
+
+
+
 def normalizar_fila(datos):
     # Homogeneizamos claves para facilitar compatibilidad con Excel
     claves = {
-        'Numero_factura': 'Número de factura',
-        'Fecha_emision': 'Fecha de emisión',
-        'Nombre_proveedor': 'Nombre del proveedor',
-        'NIF_CIF_proveedor': 'NIF/CIF del proveedor',
-        'Base_imponible': 'Base imponible',
+        'Numero_factura': 'Numero_de_factura',
+        'Fecha_emision': 'Fecha_de_emision',
+        'Nombre_proveedor': 'Nombre_del_proveedor',
+        'NIF_CIF_proveedor': 'NIF_CIF_del_proveedor',
+        'Base_imponible': 'Base_imponible',
         'IVA': 'IVA',
-        'Total_factura': 'Total factura',
-        'Tipo_fondo': 'Tipo de fondo',
-        'Id_prestamo': 'ID_PRESTAMO'
+        'Total_factura': 'Total_factura',
+        'Tipo_fondo': 'Tipo_de_fondo',
+        'Id_prestamo': 'Id_prestamoO'
     }
 
     fila = {}
