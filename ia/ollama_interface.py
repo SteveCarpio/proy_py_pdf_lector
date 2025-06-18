@@ -11,6 +11,8 @@ Eres un sistema inteligente de extracción de datos de facturas. A partir del si
 - IVA
 - Total factura
 
+Además quiero que me crees un campo Tipo de fondo, que podrá tener el texto 'TDA 22' o 'TDA 28'
+Además en las facturas vienen un valor con 14 dígitos, donde los primeros 7 primeros vienen con el valor: 5200015 ese valor me lo debes crear como un campo ID_PRESTAMO
 Texto de la factura:
 \"\"\"
 {texto_factura}
