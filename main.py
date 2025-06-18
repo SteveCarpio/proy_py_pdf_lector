@@ -19,7 +19,9 @@ def procesar_factura(path_pdf):
     print("\n🤖 Extrayendo datos con IA...")
     respuesta = extraer_datos_factura(texto)
     print("\n🧾 Datos extraídos:\n")
+    print("------------- Inicio -------------")
     print(respuesta)
+    print("------------- Fin -------------")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

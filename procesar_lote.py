@@ -19,38 +19,46 @@ def procesar_factura(path_pdf):
 
     try:
         respuesta_str = extraer_datos_factura(texto)
+        print(respuesta_str)
         datos = json.loads(respuesta_str)
         return datos
     except json.JSONDecodeError as e:
-        print(f"❌ Error al interpretar JSON en {path_pdf}: {e}")
+        print(f"❌ Error interpretando JSON en {path_pdf}: {e}")
         return {}
     except Exception as e:
         print(f"❌ Error inesperado en {path_pdf}: {e}")
         return {}
 
-def formatear_importes(dato):
-    if isinstance(dato, str):
+def formatear_importes(valor):
+    if isinstance(valor, str):
         try:
-            num = float(dato.replace('.', '').replace(',', '.'))
-            return f"{num:,.2f}"
+            numero = float(valor.replace('.', '').replace(',', '.'))
+            return f"{numero:,.2f}"
         except:
-            return dato
-    return dato
+            return valor
+    return valor
 
 def normalizar_fila(datos):
-    campos_objetivo = [
-        'Número de factura', 'Fecha de emisión', 'Nombre del proveedor',
-        'NIF/CIF del proveedor', 'Base imponible', 'IVA', 'Total factura',
-        'Tipo de fondo', 'ID_PRESTAMO', 'id_prestamo'  # añadimos variante por si acaso
-    ]
-    fila = {}
-    for campo in campos_objetivo:
-        if campo in datos:
-            fila[campo] = datos[campo]
+    # Homogeneizamos claves para facilitar compatibilidad con Excel
+    claves = {
+        'Numero_factura': 'Número de factura',
+        'Fecha_emision': 'Fecha de emisión',
+        'Nombre_proveedor': 'Nombre del proveedor',
+        'NIF_CIF_proveedor': 'NIF/CIF del proveedor',
+        'Base_imponible': 'Base imponible',
+        'IVA': 'IVA',
+        'Total_factura': 'Total factura',
+        'Tipo_fondo': 'Tipo de fondo',
+        'Id_prestamo': 'ID_PRESTAMO'
+    }
 
-    for campo in ['Base imponible', 'IVA', 'Total factura']:
-        if campo in fila:
-            fila[campo] = formatear_importes(fila[campo])
+    fila = {}
+    for clave_origen, clave_destino in claves.items():
+        valor = datos.get(clave_origen, "")
+        if clave_destino in ['Base imponible', 'IVA', 'Total factura']:
+            valor = formatear_importes(valor)
+        fila[clave_destino] = valor
+
     return fila
 
 if __name__ == "__main__":

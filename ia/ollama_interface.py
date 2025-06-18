@@ -1,7 +1,7 @@
 import subprocess
 
 def extraer_datos_factura(texto_factura, modelo="mistral"):
-    prompt = f"""
+    prompt2 = f"""
 Eres un sistema inteligente de extracción de datos de facturas. A partir del siguiente texto extraído de una factura, genera un JSON con los siguientes campos:
 - Numero_factura
 - Fecha_emisión
@@ -18,6 +18,26 @@ Texto de la factura:
 {texto_factura}
 \"\"\"
 """
+
+    prompt = f"""
+    Extrae la siguiente información de una factura y responde **solo** con el JSON plano, sin texto adicional.
+
+    Campos requeridos:
+    - Numero_factura
+    - Fecha_emision
+    - Nombre_proveedor
+    - NIF_CIF_proveedor
+    - Base_imponible
+    - IVA
+    - Total_factura
+    - Tipo_fondo (TDA 22 o TDA 28)
+    - Id_prestamo (número de 14 dígitos que comienza con 5200015)
+
+    Texto de la factura:
+    \"\"\"{texto_factura}\"\"\"
+    """
+
+
     proceso = subprocess.run(
         ['ollama', 'run', modelo],
         input=prompt.encode('utf-8'),
