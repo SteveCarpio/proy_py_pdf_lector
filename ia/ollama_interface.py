@@ -20,14 +20,14 @@ Texto de la factura:
 """
 
     prompt = f"""
-    Extrae la siguiente información de una factura y responde **solo** con el JSON plano, sin texto adicional. Los decimales deben mostrarse con 'coma'
+    Extrae la siguiente información de una factura y responde **solo** con el JSON plano, sin texto adicional. No modificar las comas por el punto en los importes en mi región usamos la coma como separador de decimales
 
     Campos requeridos:
     - Numero_factura
     - Fecha_emision
     - Nombre_proveedor
     - NIF_CIF_proveedor
-    - Base_imponible (puede venir con la palabra solo 'base')
+    - Base (es la base imponible de la factura)
     - IVA
     - Total_factura (puede venir con la palabra solo 'total')
     - Tipo_fondo (TDA 22 o TDA 28)
