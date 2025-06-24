@@ -82,7 +82,9 @@ def normalizar_fila(datos):
         'IVA': 'IVA',
         'Total_factura': 'Total_factura',
         'Tipo_fondo': 'Tipo_de_fondo',
-        'Id_prestamo': 'Id_prestamoO'
+        'Id_prestamo': 'Id_prestamo',
+        'Numero_Procd': 'Numero_Procd',
+        'IRPF':'IRPF'
     }
 
     fila = {}
