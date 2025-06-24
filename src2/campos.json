@@ -1,0 +1,7 @@
+{
+  "numero_factura": ["Nº Factura", "Factura N°", "No. Fac", "Factura:"],
+  "fecha": ["Fecha", "Fecha de emisión", "Emisión"],
+  "importe": ["Total", "Importe", "Total Bruto", "Total a pagar"],
+  "cliente": ["Cliente", "Nombre del cliente"],
+  "emisor": ["Empresa", "Proveedor", "Emisor"]
+}

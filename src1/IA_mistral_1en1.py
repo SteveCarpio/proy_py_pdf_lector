@@ -52,7 +52,7 @@ Claude 3 (Anthropic)
 
 Gemini Pro (Google)
 
-O modelos open-source más grandes, como Mixtral 8x7B, LLaMA 3 13B, etc.
+O modelos open-source más grandes, como Mistral 8x7B, LLaMA 3 13B, etc.
 
 Estos últimos requieren:
 
