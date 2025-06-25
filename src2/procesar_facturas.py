@@ -17,10 +17,18 @@ model = VisionEncoderDecoderModel.from_pretrained(r"C:\MisCompilados\ia\model\do
 
 # Define los campos y variantes
 CAMPOS = {
-    "fecha": ["fecha", "fecha de emisión", "issue date", "emisión"],
-    "total": ["total", "importe total", "total amount", "grand total"],
-    # Añade más campos...
-}
+    "Numero_factura": ["Nº factura", "Número de factura", "Factura nº", "Expediente"],
+    "Fecha_emision": ["Fecha", "Fecha emisión", "Emisión", "Expedida"],
+    "Nombre_proveedor": ["emisor", "proveedor", "seller", "vendor", "razón social emisor"],
+    "NIF_CIF_proveedor": ["NIF","CIF"],
+    "Base_imponible": ["base", "base imponible"],    
+    "IVA": ["importe del IVA"],
+    "Total_factura": ["Total", "Total a Pagar", "monto total", "total factura"],
+    "Tipo_fondo": ["debe ser exactamente TDA 22 o TDA 28"],
+    "Id_prestamo": ["número de 14 dígitos que comienza por 5200015, si contiene puntos su tamaño será mayor a 14"],
+    "Numero_Procd": ["Procd"],
+    "IRPF": ["IRPF", "RPF", "LR.P.F"]
+    }
 
 def extraer_campos_desde_texto(texto, campos):
     salida = {}
@@ -68,6 +76,8 @@ def procesar_carpeta(ruta_carpeta):
     return resultados
 
 # USO
-carpeta_facturas = "C:/Users/scarpio/Documents/GitHub/proy_py_pdf_lector/facturas_pdffacturas"
+carpeta_facturas = "C:/Users/scarpio/Documents/GitHub/proy_py_pdf_lector/facturas_pdf"
 resultados = procesar_carpeta(carpeta_facturas)
+print("--------------------")
 print(resultados)
+print("--------------------")
