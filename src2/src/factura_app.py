@@ -1,3 +1,11 @@
+# ---------------------------------------------------------------
+# Proyecto IA: Lector de facturas en formato PDF
+#
+# Nombre: PDF_LECTOR
+# Run:  streamlit run factura_app.py --server.address=0.0.0.0
+# 
+# ---------------------------------------------------------------
+
 import streamlit as st 
 import os
 import io
@@ -10,7 +18,14 @@ from datetime import datetime
 
 # Configuración de la página
 st.set_page_config(page_title="📄 Extractor de Facturas con IA", layout="wide")
-st.title("📄 Extractor de Facturas con IA (TDA)")
+st.image("C:\\MisCompilados\\img\\logotipo.gif", width=120)
+#st.title(" Extractor de Facturas con IA")  #  📄
+st.markdown(
+    """
+    <h1 style='text-align: center;'>Extractor de Facturas con IA</h1>
+    """,
+    unsafe_allow_html=True
+)
 
 # Subida o carga de archivos
 uploaded_files = st.file_uploader("Sube varios PDFs o TXT", type=["pdf", "txt"], accept_multiple_files=True)
@@ -69,8 +84,8 @@ if uploaded_files:
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df.to_excel(writer, index=False, sheet_name='Facturas')
-        writer.save()
-        processed_data = output.getvalue()
+    output.seek(0)  #  Esto asegura que la lectura desde el inicio
+    processed_data = output.getvalue()
 
     st.download_button(
         "📥 Descargar Excel",
@@ -98,8 +113,10 @@ st.markdown("""
 - Si se proporciona una ruta válida, el Excel se guarda automáticamente en esa carpeta.
 """)
 
+
 # Información del autor y empresa
 st.markdown("---")
+#st.image("C:\\MisCompilados\\img\\logotipo.gif", width=120)
 st.markdown("""
 **👨‍💻 Desarrollado por:** Steve Carpio  
 **🏢 Empresa:** TDA S.A.  
