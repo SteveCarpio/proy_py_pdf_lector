@@ -1,5 +1,9 @@
 # Ignorar el entorno virtual
 env/
+.venv
+.vscode
+*.jsonl
+
 
 # Ignorar archivos de Python compilados
 __pycache__/
