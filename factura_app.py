@@ -2,7 +2,7 @@
 # Proyecto IA: Lector de facturas en formato PDF
 #
 # Nombre: PDF_LECTOR
-# Run:  streamlit run factura_app.py --server.address=0.0.0.0
+# Run:  streamlit run factura_app_v2.py --server.address=0.0.0.0
 # 
 # ---------------------------------------------------------------
 
@@ -12,9 +12,15 @@ import io
 import glob
 import asyncio
 import concurrent.futures
-from utils import extract_text, run_model, valida_campos, limpiar_campos, CAMPOS
 import pandas as pd
+
 from datetime import datetime
+from utils.ocr_utils import extract_text
+from utils.model_runner import run_model
+from utils.validation import valida_campos
+from utils.data_cleaning import limpiar_campos
+from utils.constants import CAMPOS
+
 
 # Configuración de la página
 st.set_page_config(page_title="📄 Extractor de Facturas con IA", layout="wide")
@@ -77,7 +83,7 @@ if uploaded_files:
     # Contenedor dinámico para mostrar progreso
     progreso_placeholder = st.empty()
 
-    # Ejecutar procesamiento
+    # Ejecutar proceso
     resultados = asyncio.run(procesar_todo(uploaded_files, progreso_placeholder))
 
     hora_fin = datetime.now()
