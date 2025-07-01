@@ -2,7 +2,7 @@
 # Proyecto IA: Lector de facturas en formato PDF
 #
 # Nombre: PDF_LECTOR
-# Run:  streamlit run factura_app.py --server.address=0.0.0.0
+# Run:  streamlit run factura_app_v2.py --server.address=0.0.0.0
 # 
 # ---------------------------------------------------------------
 
@@ -19,7 +19,6 @@ from datetime import datetime
 # Configuración de la página
 st.set_page_config(page_title="📄 Extractor de Facturas con IA", layout="wide")
 st.image("C:\\MisCompilados\\img\\logotipo.gif", width=120)
-#st.title(" Extractor de Facturas con IA")  #  📄
 st.markdown(
     """
     <h1 style='text-align: center;'>Extractor de Facturas con IA</h1>
@@ -52,15 +51,6 @@ async def procesar_archivo(file_bytes, filename):
     data["Error"] = msg
     return data
 
-'''
-async def procesar_todo(files):
-    tasks = []
-    for file in files:
-        file_bytes = file.read()
-        name = file.name if hasattr(file, "name") else "desconocido.pdf"
-        tasks.append(procesar_archivo(file_bytes, name))
-    return await asyncio.gather(*tasks)
-'''
 async def procesar_todo(files, contenedor_progreso):
     resultados = []
     total = len(files)
@@ -76,18 +66,19 @@ async def procesar_todo(files, contenedor_progreso):
     contenedor_progreso.success("✅ Procesamiento completado.")
     return resultados
 
-
-
 # Procesamiento principal
 if uploaded_files:
     hora_inicio = datetime.now()
-    
-    st.info(f"Procesando {len(uploaded_files)} archivo(s)...")
+    total_archivos = len(uploaded_files)
+
+    st.info(f"Procesando {total_archivos} archivo(s)...")
     st.write(f"🕐 Inicio del proceso: {hora_inicio.strftime('%H:%M:%S')}")
 
-    
-    with st.spinner("⏳ Procesando archivos, por favor espera... "):
-        resultados = asyncio.run(procesar_todo(uploaded_files))
+    # Contenedor dinámico para mostrar progreso
+    progreso_placeholder = st.empty()
+
+    # Ejecutar procesamiento
+    resultados = asyncio.run(procesar_todo(uploaded_files, progreso_placeholder))
 
     hora_fin = datetime.now()
     duracion = (hora_fin - hora_inicio).total_seconds()
@@ -96,24 +87,24 @@ if uploaded_files:
     df = pd.DataFrame(resultados)
     st.dataframe(df)
 
+    
     # Descargar CSV
-    csv = df.to_csv(index=False).encode("utf-8")
-    st.download_button("📥 Descargar CSV", data=csv, file_name="facturas.csv", mime="text/csv")
+    #csv = df.to_csv(index=False).encode("utf-8")
+    #st.download_button("📥 Descargar CSV", data=csv, file_name="facturas.csv", mime="text/csv")
 
     # Descargar Excel en memoria
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False, sheet_name='Facturas')
-    output.seek(0)  #  Esto asegura que la lectura desde el inicio
-    processed_data = output.getvalue()
-
-    st.download_button(
-        "📥 Descargar Excel",
-        data=processed_data,
-        file_name="facturas.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
+    #output = io.BytesIO()
+    #with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    #    df.to_excel(writer, index=False, sheet_name='Facturas')
+    #output.seek(0)
+    #processed_data = output.getvalue()
+    #st.download_button(
+    #    "📥 Descargar Excel",
+    #    data=processed_data,
+    #    file_name="facturas.xlsx",
+    #    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    #)
+    
     # Guardar automáticamente Excel en ruta local si es válida
     if ruta_carpeta and os.path.isdir(ruta_carpeta):
         ruta_salida = os.path.join(ruta_carpeta, "salida.xlsx")
@@ -125,7 +116,7 @@ if uploaded_files:
 
 # Información de uso
 st.markdown("---")
-st.markdown("### ℹ️ Instrucciones de uso")
+st.markdown("### ℹ️ Instrucciones de uso.")
 st.markdown("""
 - Puedes subir múltiples archivos PDF o TXT directamente.
 - O bien, indicar una ruta local con facturas para procesar todo el contenido de esa carpeta.
@@ -133,13 +124,14 @@ st.markdown("""
 - Si se proporciona una ruta válida, el Excel se guarda automáticamente en esa carpeta.
 """)
 
-
 # Información del autor y empresa
 st.markdown("---")
-#st.image("C:\\MisCompilados\\img\\logotipo.gif", width=120)
 st.markdown("""
-**👨‍💻 Desarrollado por:** Steve Carpio  
-**🏢 Empresa:** TDA S.A.  
+
+**🏢 Empresa:** Titulización de Activos S.G.F.T., S.A.  
+**👨‍💻 Dudas:** Steve Carpio  
 **✉️ Contacto:** carpios@tda-sgft.com  
 **🧾 Versión:** 1.0.0  
+**🧾 Modelo:** Mistral  
+            
 """)
