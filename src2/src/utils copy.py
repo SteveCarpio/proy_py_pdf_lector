@@ -11,6 +11,12 @@ from io import BytesIO
 import re
 from datetime import datetime
 
+CAMPOS_original = [
+    "Número", "Emisor", "CIF Emisor", "Fecha", "Vencimiento",
+    "Dirección Emisor", "Correo Emisor", "Nombre Cliente", "Correo Cliente",
+    "CIF Cliente", "Base Imponible", "IVA", "Total", "Moneda"
+]
+
 CAMPOS = [
     "Numero_factura",
     "Fecha_emision",
@@ -92,37 +98,36 @@ def run_model(text, model="mistral"):
     ejemplos_json = "\n\n".join(json.dumps(e, ensure_ascii=False) for e in ejemplos)
 
     prompt = f"""
-    Analiza el siguiente texto de una factura española y extrae los siguientes campos.  
-    Responde únicamente con un JSON plano (sin ningún texto antes o después del JSON).
+Analiza el siguiente texto de una factura española y extrae los siguientes campos.  
+Responde únicamente con un JSON plano (sin ningún texto antes o después del JSON).
 
-    Instrucciones importantes:
-    - Usa coma (",") como separador decimal en los importes. No modifiques el formato original de los importes ni de la moneda.
-    - Si algún campo no se encuentra, inclúyelo en el JSON con valor null.
-    - Los nombres de los campos deben estar entre comillas dobles y escribirse exactamente como aparecen en la lista siguiente, aunque en la factura aparezcan con otras expresiones o en mayúsculas/minúsculas diferentes.
-    - Si un importe incluye el símbolo de euro (€), mantenlo tal cual.
-    - Si hay varios valores posibles para un campo, selecciona el primero que aparezca en el texto.
-    - Devuelve únicamente el JSON, sin explicaciones, comentarios ni texto adicional.
+Instrucciones importantes:
+- Usa coma (",") como separador decimal en los importes. No modifiques el formato original de los importes ni de la moneda.
+- Si algún campo no se encuentra, inclúyelo en el JSON con valor null.
+- Los nombres de los campos deben estar entre comillas dobles y escribirse exactamente como aparecen en la lista siguiente, aunque en la factura aparezcan con otras expresiones o en mayúsculas/minúsculas diferentes.
+- Si un importe incluye el símbolo de euro (€), mantenlo tal cual.
+- Si hay varios valores posibles para un campo, selecciona el primero que aparezca en el texto.
+- Devuelve únicamente el JSON, sin explicaciones, comentarios ni texto adicional.
 
-    Campos requeridos:
-    - "Numero_factura" (puede aparecer como: "Nº factura", "Número de factura", "Factura nº", "Expediente")
-    - "Fecha_emision" (puede aparecer como: "Fecha", "Fecha emisión", "Emisión", "Expedida")
-    - "Nombre_proveedor" (puede aparecer como: "emisor", "proveedor", "seller", "vendor", "razón social emisor")
-    - "NIF_CIF_proveedor" (número fiscal del proveedor, puede aparecer como NIF o CIF)
-    - "Base_imponible" (puede aparecer como: "base", "base imponible", o suele ser la cantidad que resulta de restar el IVA al Total Factura)
-    - "IVA" (importe del IVA)
-    - "Total_factura" (puede aparecer como: "Total", "Total a Pagar", "monto total", "total factura")
-    - "Tipo_fondo" (debe ser exactamente "TDA 22" o "TDA 28")
-    - "Id_prestamo" (número de 14 dígitos que comienza por 5200015, si contiene "puntos" su tamaño será mayor a 14)
-    - "Numero_Procd" (puede aparecer como: "Procd")
-    - "IRPF" (puede aparecer como: "IRPF", "RPF", "LR.P.F"; no es un porcentaje, sino un importe)
+Campos requeridos:
+- "Numero_factura"
+- "Fecha_emision"
+- "Nombre_proveedor"
+- "NIF_CIF_proveedor"
+- "Base_imponible"
+- "IVA"
+- "Total_factura"
+- "Tipo_fondo"
+- "Id_prestamo"
+- "Numero_Procd"
+- "IRPF"
 
+Ejemplos de salida esperada:
 
-    Ejemplos de salida esperada:
+{ejemplos_json}
 
-    {ejemplos_json}
-
-    📄 Texto de la factura:
-    \"\"\"{text}\"\"\"
+📄 Texto de la factura:
+\"\"\"{text}\"\"\"
     """.strip()
 
     result = subprocess.run(
@@ -140,55 +145,92 @@ def run_model(text, model="mistral"):
     return {campo: parsed_json.get(campo, "") for campo in CAMPOS}
 
 
+
+def run_model_original(text, model="mistral"):
+    ejemplos = [
+        {
+            "Número": "INV-2023-045",
+            "Emisor": "Servicios Cloud S.A.",
+            "CIF Emisor": "B12345678",
+            "Fecha": "2023-09-12",
+            "Vencimiento": "2023-10-12",
+            "Dirección Emisor": "Av. Ejemplo 101, Madrid",
+            "Correo Emisor": "info@cloud.com",
+            "Nombre Cliente": "Steve Carpio",
+            "Correo Cliente": "stv.madrid@gmail.com",
+            "CIF Cliente": "X9988776Q",
+            "Base Imponible": "850.00",
+            "IVA": "178.50",
+            "Total": "1028.50",
+            "Moneda": "EUR"
+        },
+        {
+            "Número": "F-001",
+            "Emisor": "Papelería Eva",
+            "CIF Emisor": "B99988877",
+            "Fecha": "2024-01-05",
+            "Vencimiento": "2024-01-20",
+            "Dirección Emisor": "Calle Mayor 3",
+            "Correo Emisor": "eva@papeleria.com",
+            "Nombre Cliente": "Empresa Beta",
+            "Correo Cliente": "contacto@empresa.com",
+            "CIF Cliente": "B11223344",
+            "Base Imponible": "200.00",
+            "IVA": "42.00",
+            "Total": "242.00",
+            "Moneda": "EUR"
+        }
+    ]
+
+    ejemplos_json = "\n\n".join(json.dumps(e, ensure_ascii=False) for e in ejemplos)
+
+    prompt = f"""
+Extrae los datos de una factura en español. Devuelve un JSON siguiendo estos ejemplos:
+
+{ejemplos_json}
+
+A continuación el texto a procesar:
+{text}
+    """.strip()
+
+    result = subprocess.run(
+        ["ollama", "run", model],
+        input=prompt.encode("utf-8"),
+        capture_output=True
+    )
+    output = result.stdout.decode("utf-8")
+
+    try:
+        parsed_json = json.loads(output[output.find("{"):output.rfind("}")+1])
+    except:
+        parsed_json = {}
+
+    return {campo: parsed_json.get(campo, "") for campo in CAMPOS}
+
 def normalizar_fecha(fecha):
-    """
-    Intenta convertir la fecha a formato YYYY-MM-DD.
-    Si no puede, devuelve la fecha original sin modificar.
-    """
-    if not fecha:
-        return ""
-
-    original = str(fecha).strip()
-    formatos = ("%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d", "%Y-%m-%d")
-
-    for fmt in formatos:
+    for fmt in ("%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d", "%Y-%m-%d"):
         try:
-            return datetime.strptime(original, fmt).strftime("%Y-%m-%d")
+            return datetime.strptime(fecha.strip(), fmt).strftime("%Y-%m-%d")
         except:
             continue
-
-    return original  # conserva si falla
+    return fecha
 
 def normalizar_numero(valor):
-    """
-    Intenta convertir el valor a número decimal con dos cifras.
-    Si no puede, devuelve el valor original sin modificar.
-    """
-    if valor is None:
-        return ""
-
-    original = valor  # lo que vino del modelo
+    valor = valor.replace("€", "").strip()
+    valor = valor.replace(",", ".")
+    valor = valor.replace(",", ".")
     try:
-        if isinstance(valor, str):
-            cleaned = valor.strip().replace("€", "").replace(",", ".")
-        else:
-            cleaned = str(valor)
-
-        return "{:.2f}".format(float(cleaned))
+        return "{:.2f}".format(float(valor))
     except:
-        return original  # conserva el original si falla
-
+        return valor
 
 def limpiar_campos(data):
-    campos_num = ["Base_imponible", "IVA", "Total_factura", "IRPF"]
-    campos_fecha = ["Fecha_emision"]
-
+    campos_num = ["Base_imponible", "IVA", "Total_factura"]
+    campos_fecha = ["Fecha_emision"]  # campos_fecha = ["Fecha_emision", "Vencimiento"]
     for f in campos_num:
         data[f] = normalizar_numero(data.get(f, ""))
-
     for f in campos_fecha:
         data[f] = normalizar_fecha(data.get(f, ""))
-
     return data
 
 def valida_campos(d):

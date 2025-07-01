@@ -2,32 +2,6 @@ import subprocess
 
 def extraer_datos_factura(texto_factura, modelo="llama3"): # llama3 / mistral
 
-    prompt1 = f"""
-Analiza el texto de una factura y extrae los siguientes campos. 
-Responde exclusivamente con un JSON plano, **sin texto adicional**.
-
-Importante:
-- Usa coma (",") como separador decimal en los importes, no modificarlo.
-- Si no se encuentra algún campo, incluirlo como `null`.
-- Los nombres de campos en el JSON deben escribirse tal como se listan a continuación, aunque el texto en la factura use otras expresiones.
-
-Campos requeridos:
-- "Numero_factura" (puede aparecer como "Nº factura", "Número de factura", "Factura nº", "Expediente")
-- "Fecha_emision" (puede aparecer como "Fecha", "Fecha emisión", "Emisión", "Expedida")
-- "Nombre_proveedor" (puede aparecer como: "emisor", "proveedor", "seller", "vendor", "razón social emisor")
-- "NIF_CIF_proveedor" (número fiscal del proveedor (CIF o NIF))
-- "Base_imponible" (puede aparecer como "base", "base imponible" o suele ser una cantidad que es la resta entre IVA y el Total Factura)
-- "IVA" (importe del IVA)
-- "Total_factura" (puede aparecer como "Total", "Total a Pagar", "monto total", "total factura")
-- "Tipo_fondo" (debe ser "TDA 22" o "TDA 28")
-- "Id_prestamo" (número de 14 dígitos que comienza por 5200015, si contiene "puntos" su tamaño será mayor a 14)
-- "Numero_Procd" (puede aparecer como "Procd")
-- "IRPF" (puede aparecer como "IRPF", "RPF", "LR.P.F", no es una cantidad que tenga el símbolo de porcentaje)
-
-📄 Texto de la factura:
-\"\"\"{texto_factura}\"\"\"
-"""
-
     prompt = f"""
 Analiza el siguiente texto de una factura española y extrae los siguientes campos.  
 Responde únicamente con un JSON plano (sin ningún texto antes o después del JSON).

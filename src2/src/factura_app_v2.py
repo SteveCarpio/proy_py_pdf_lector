@@ -87,24 +87,24 @@ if uploaded_files:
     df = pd.DataFrame(resultados)
     st.dataframe(df)
 
+    
     # Descargar CSV
-    csv = df.to_csv(index=False).encode("utf-8")
-    st.download_button("📥 Descargar CSV", data=csv, file_name="facturas.csv", mime="text/csv")
+    #csv = df.to_csv(index=False).encode("utf-8")
+    #st.download_button("📥 Descargar CSV", data=csv, file_name="facturas.csv", mime="text/csv")
 
     # Descargar Excel en memoria
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False, sheet_name='Facturas')
-    output.seek(0)
-    processed_data = output.getvalue()
-
-    st.download_button(
-        "📥 Descargar Excel",
-        data=processed_data,
-        file_name="facturas.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
+    #output = io.BytesIO()
+    #with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    #    df.to_excel(writer, index=False, sheet_name='Facturas')
+    #output.seek(0)
+    #processed_data = output.getvalue()
+    #st.download_button(
+    #    "📥 Descargar Excel",
+    #    data=processed_data,
+    #    file_name="facturas.xlsx",
+    #    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    #)
+    
     # Guardar automáticamente Excel en ruta local si es válida
     if ruta_carpeta and os.path.isdir(ruta_carpeta):
         ruta_salida = os.path.join(ruta_carpeta, "salida.xlsx")
@@ -116,7 +116,7 @@ if uploaded_files:
 
 # Información de uso
 st.markdown("---")
-st.markdown("### ℹ️ Instrucciones de uso")
+st.markdown("### ℹ️ Instrucciones de uso.")
 st.markdown("""
 - Puedes subir múltiples archivos PDF o TXT directamente.
 - O bien, indicar una ruta local con facturas para procesar todo el contenido de esa carpeta.
@@ -127,8 +127,11 @@ st.markdown("""
 # Información del autor y empresa
 st.markdown("---")
 st.markdown("""
-**👨‍💻 Desarrollado por:** Steve Carpio  
-**🏢 Empresa:** TDA S.A.  
+
+**🏢 Empresa:** Titulización de Activos S.G.F.T., S.A.  
+**👨‍💻 Dudas:** Steve Carpio  
 **✉️ Contacto:** carpios@tda-sgft.com  
 **🧾 Versión:** 1.0.0  
+**🧾 Modelo:** Mistral  
+            
 """)
