@@ -2,7 +2,7 @@
 # Proyecto IA: Lector de facturas en formato PDF
 #
 # Nombre: PDF_LECTOR
-# Run:  streamlit run factura_app_v2.py --server.address=0.0.0.0
+# Run:  streamlit run factura_app.py --server.address=0.0.0.0
 # 
 # ---------------------------------------------------------------
 
