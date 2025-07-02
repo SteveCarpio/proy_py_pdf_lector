@@ -86,13 +86,9 @@ if uploaded_files:
     # Ejecutar proceso
     resultados = asyncio.run(procesar_todo(uploaded_files, progreso_placeholder))
 
-    hora_fin = datetime.now()
-    duracion = (hora_fin - hora_inicio).total_seconds()
-
     # Mostrar resultados
     df = pd.DataFrame(resultados)
     st.dataframe(df)
-
     
     # Descargar CSV
     #csv = df.to_csv(index=False).encode("utf-8")
@@ -117,8 +113,13 @@ if uploaded_files:
         df.to_excel(ruta_salida, index=False)
         st.success(f"✅ Excel guardado automáticamente en: `{ruta_salida}`")
 
+    # Calculo de tiempo de ejecución en horas y minutos
+    hora_fin = datetime.now()
+    duracion = int((hora_fin - hora_inicio).total_seconds())
+    horas = duracion // 3600
+    minutos = (duracion % 3600) // 60
     st.write(f"🕔 Fin del proceso: {hora_fin.strftime('%H:%M:%S')}")
-    st.write(f"⏱ Duración total: {duracion:.2f} segundos")
+    st.write(f"⏱ Duración total: {horas} h {minutos} min")
 
 # Información de uso
 st.markdown("---")
