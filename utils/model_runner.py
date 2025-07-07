@@ -8,7 +8,7 @@ import subprocess
 import json
 from utils.constants import CAMPOS
 
-def run_model(text, model="mistral"):
+def run_model(text, model="llama3:instruct"):  # llama3:instruct (8B parámetros) : mistral
     """
     Ejecuta el modelo Mistral (vía Ollama) para procesar el texto y
     devolver un JSON con los campos extraídos.
