@@ -7,6 +7,7 @@
 # IP: 10.10.30.4
 # Run:  streamlit run factura_app.py --server.address=0.0.0.0  
 # Run:  streamlit run factura_app.py
+# pip freeze > requirements.txt
 # 
 # ---------------------------------------------------------------
 
