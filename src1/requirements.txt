@@ -4,3 +4,4 @@ pdf2image
 pytesseract
 opencv-python
 pillow
+openpyxl

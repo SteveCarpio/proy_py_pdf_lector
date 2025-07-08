@@ -2,7 +2,11 @@
 # Proyecto IA: Lector de facturas en formato PDF
 #
 # Nombre: PDF_LECTOR
-# Run:  streamlit run factura_app.py --server.address=0.0.0.0
+# Primera vez: crear :  py -3.12 -m venv venv312
+# .\venv312\Scripts\activate
+# IP: 10.10.30.4
+# Run:  streamlit run factura_app.py --server.address=0.0.0.0  
+# Run:  streamlit run factura_app.py
 # 
 # ---------------------------------------------------------------
 

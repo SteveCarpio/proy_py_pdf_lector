@@ -1,5 +1,6 @@
 # Ignorar el entorno virtual
 env/
+venv312/
 .venv
 .vscode
 *.jsonl
